@@ -3,10 +3,13 @@ import { CommentComponent } from './CommentComponent';
 
 type Props = {
   comments: Comment[];
-  onClick: (deletedComment: Comment) => void;
+  onPointerDown: (deletedComment: Comment) => void;
 };
 
-export const CommentsList = ({ comments, onClick }: Props) => {
+export const CommentsList = ({
+  comments,
+  onPointerDown: onPointerDown,
+}: Props) => {
   return (
     <>
       <p className="title is-4">Comments:</p>
@@ -15,7 +18,9 @@ export const CommentsList = ({ comments, onClick }: Props) => {
         return (
           <CommentComponent
             comment={comment}
-            onClick={(deletedComment: Comment) => onClick(deletedComment)}
+            onPointerDown={(deletedComment: Comment) =>
+              onPointerDown(deletedComment)
+            }
             key={comment.id}
           />
         );

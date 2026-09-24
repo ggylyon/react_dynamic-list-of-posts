@@ -73,7 +73,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           {comments.length > 0 && !isLoading && (
             <CommentsList
               comments={comments}
-              onClick={(deletedComment: Comment) =>
+              onPointerDown={(deletedComment: Comment) =>
                 handleDeleteComment(deletedComment)
               }
             />
@@ -84,7 +84,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
               data-cy="WriteCommentButton"
               type="button"
               className="button is-link"
-              onClick={() => setIsCommentFormVisible(true)}
+              onPointerDown={() => setIsCommentFormVisible(true)}
             >
               Write a comment
             </button>

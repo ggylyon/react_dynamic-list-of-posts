@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { User } from '../types/User';
 import classNames from 'classnames';
 
@@ -15,6 +15,26 @@ export const UserSelector: React.FC<Props> = ({
 }) => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
+  const selectorRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const handleClickOutsideSelector = (event: PointerEvent) => {
+      if (event.target instanceof Node) {
+        if (selectorRef.current) {
+          if (!selectorRef.current.contains(event.target)) {
+            setIsDropdownVisible(false);
+          }
+        }
+      }
+    };
+
+    document.addEventListener('pointerdown', handleClickOutsideSelector);
+
+    return () => {
+      document.removeEventListener('pointerdown', handleClickOutsideSelector);
+    };
+  }, []);
+
   return (
     <div
       data-cy="UserSelector"
@@ -26,9 +46,10 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => {
+          onPointerDown={() => {
             setIsDropdownVisible(!isDropdownVisible);
           }}
+          ref={selectorRef}
         >
           <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
 
@@ -48,10 +69,10 @@ export const UserSelector: React.FC<Props> = ({
                   'is-active': selectedUser?.id === user.id,
                 })}
                 key={user.id}
-                onClick={event => {
+                onPointerDown={event => {
                   event.preventDefault();
-                  onSelect(user);
                   setIsDropdownVisible(false);
+                  onSelect(user);
                 }}
               >
                 {user.name}

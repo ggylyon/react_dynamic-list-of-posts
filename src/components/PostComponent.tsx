@@ -21,7 +21,7 @@ export const PostComponent = ({ post, selectedPost, onSelect }: Props) => {
           className={classNames('button', 'is-link', {
             'is-light': post !== selectedPost,
           })}
-          onClick={() => onSelect(post)}
+          onPointerDown={() => onSelect(post)}
         >
           {post !== selectedPost ? 'Open' : 'Close'}
         </button>
