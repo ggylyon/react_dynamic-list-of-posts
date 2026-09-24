@@ -19,6 +19,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [isCommentFormVisible, setIsCommentFormVisible] = useState(false);
 
   useEffect(() => {
+    setIsCommentFormVisible(false);
     setIsLoading(true);
 
     client
@@ -50,7 +51,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
-          <h2 data-cy="PostTitle">{post.title}</h2>
+          <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
 
           <p data-cy="PostBody">{post.body}</p>
         </div>
@@ -79,7 +80,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             />
           )}
 
-          {!isCommentFormVisible && !isLoading && (
+          {!isCommentFormVisible && !isLoading && !isError && (
             <button
               data-cy="WriteCommentButton"
               type="button"
