@@ -4,14 +4,14 @@ import classNames from 'classnames';
 
 type Props = {
   users: User[];
-  setSelectedUser: (user: User) => void;
   selectedUser: User | null;
+  onSelect: (user: User) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
-  setSelectedUser,
   selectedUser,
+  onSelect,
 }) => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
@@ -49,7 +49,7 @@ export const UserSelector: React.FC<Props> = ({
                 })}
                 key={user.id}
                 onClick={() => {
-                  setSelectedUser(user);
+                  onSelect(user);
                   setIsDropdownVisible(false);
                 }}
               >

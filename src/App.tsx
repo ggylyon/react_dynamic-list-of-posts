@@ -19,7 +19,6 @@ export const App = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const [posts, setPosts] = useState<Post[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -59,6 +58,16 @@ export const App = () => {
     loadPostsFromUser(user);
   }
 
+  function handlePostSelect(post: Post) {
+    if (post === selectedPost) {
+      setSelectedPost(null);
+
+      return;
+    }
+
+    setSelectedPost(post);
+  }
+
   return (
     <main className="section">
       <div className="container">
@@ -68,8 +77,8 @@ export const App = () => {
               <div className="block">
                 <UserSelector
                   users={users}
-                  setSelectedUser={(user: User) => handleUserSelect(user)}
                   selectedUser={selectedUser}
+                  onSelect={(user: User) => handleUserSelect(user)}
                 />
               </div>
 
@@ -95,7 +104,13 @@ export const App = () => {
                   </div>
                 )}
 
-                {posts.length > 0 && !isLoading && <PostsList />}
+                {posts.length > 0 && !isLoading && (
+                  <PostsList
+                    posts={posts}
+                    selectedPost={selectedPost}
+                    onSelect={(post: Post) => handlePostSelect(post)}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -112,7 +127,7 @@ export const App = () => {
               )}
             >
               <div className="tile is-child box is-success ">
-                <PostDetails />
+                <PostDetails post={selectedPost} />
               </div>
             </div>
           )}
