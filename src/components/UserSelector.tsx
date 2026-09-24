@@ -30,7 +30,7 @@ export const UserSelector: React.FC<Props> = ({
             setIsDropdownVisible(!isDropdownVisible);
           }}
         >
-          <span>Choose a user</span>
+          <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -48,7 +48,10 @@ export const UserSelector: React.FC<Props> = ({
                   'is-active': selectedUser?.id === user.id,
                 })}
                 key={user.id}
-                onClick={() => setSelectedUser(user)}
+                onClick={() => {
+                  setSelectedUser(user);
+                  setIsDropdownVisible(false);
+                }}
               >
                 {user.name}
               </a>

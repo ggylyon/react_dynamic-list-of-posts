@@ -12,11 +12,18 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
 import { client } from './utils/fetchClient';
+import { Post } from './types/Post';
 
 export const App = () => {
+  const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     client.get<User[]>('/users').then((response: User[]) => {
@@ -25,6 +32,32 @@ export const App = () => {
       }
     });
   }, []);
+
+  function loadPostsFromUser(user: User) {
+    setPosts([]);
+    setIsLoading(true);
+
+    client
+      .get<Post[]>(`/posts?userId=${user.id}`)
+      .then((response: Post[]) => {
+        setPosts(response);
+      })
+      .catch(() => {
+        setIsError(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
+
+  function handleUserSelect(user: User) {
+    if (user === selectedUser) {
+      return;
+    }
+
+    setSelectedUser(user);
+    loadPostsFromUser(user);
+  }
 
   return (
     <main className="section">
@@ -35,7 +68,7 @@ export const App = () => {
               <div className="block">
                 <UserSelector
                   users={users}
-                  setSelectedUser={(user: User) => setSelectedUser(user)}
+                  setSelectedUser={(user: User) => handleUserSelect(user)}
                   selectedUser={selectedUser}
                 />
               </div>
@@ -45,38 +78,44 @@ export const App = () => {
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                <Loader />
+                {isLoading && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {isError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {!posts.length && selectedUser && !isLoading && !isError && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
-                <PostsList />
+                {posts.length > 0 && !isLoading && <PostsList />}
               </div>
             </div>
           </div>
 
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
-            )}
-          >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
+          {selectedPost && (
+            <div
+              data-cy="Sidebar"
+              className={classNames(
+                'tile',
+                'is-parent',
+                'is-8-desktop',
+                'Sidebar',
+                'Sidebar--open',
+              )}
+            >
+              <div className="tile is-child box is-success ">
+                <PostDetails />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </main>
