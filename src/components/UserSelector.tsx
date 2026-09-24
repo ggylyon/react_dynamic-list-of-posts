@@ -48,7 +48,8 @@ export const UserSelector: React.FC<Props> = ({
                   'is-active': selectedUser?.id === user.id,
                 })}
                 key={user.id}
-                onClick={() => {
+                onClick={event => {
+                  event.preventDefault();
                   onSelect(user);
                   setIsDropdownVisible(false);
                 }}

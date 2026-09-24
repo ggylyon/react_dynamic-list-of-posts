@@ -16,6 +16,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [isCommentFormVisible, setIsCommentFormVisible] = useState(false);
+
   useEffect(() => {
     setIsLoading(true);
 
@@ -31,6 +33,18 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         setIsLoading(false);
       });
   }, [post]);
+
+  function handleDeleteComment(deletedComment: Comment) {
+    const commentsCopy = [...comments];
+
+    setComments(oldComments =>
+      oldComments.filter(comment => comment !== deletedComment),
+    );
+
+    client.delete(`/comments/${deletedComment.id}`).catch(() => {
+      setComments(commentsCopy);
+    });
+  }
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -57,19 +71,34 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           )}
 
           {comments.length > 0 && !isLoading && (
-            <CommentsList comments={comments} />
+            <CommentsList
+              comments={comments}
+              onClick={(deletedComment: Comment) =>
+                handleDeleteComment(deletedComment)
+              }
+            />
           )}
 
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+          {!isCommentFormVisible && !isLoading && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setIsCommentFormVisible(true)}
+            >
+              Write a comment
+            </button>
+          )}
         </div>
 
-        <NewCommentForm />
+        {isCommentFormVisible && !isLoading && (
+          <NewCommentForm
+            postId={post.id}
+            onSuccess={(newComment: Comment) =>
+              setComments(oldComments => [...oldComments, newComment])
+            }
+          />
+        )}
       </div>
     </div>
   );

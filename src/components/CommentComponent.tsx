@@ -2,9 +2,10 @@ import { Comment } from '../types/Comment';
 
 type Props = {
   comment: Comment;
+  onClick: (comment: Comment) => void;
 };
 
-export const CommentComponent = ({ comment }: Props) => {
+export const CommentComponent = ({ comment, onClick }: Props) => {
   return (
     <article className="message is-small" data-cy="Comment">
       <div className="message-header">
@@ -16,6 +17,7 @@ export const CommentComponent = ({ comment }: Props) => {
           type="button"
           className="delete is-small"
           aria-label="delete"
+          onClick={() => onClick(comment)}
         >
           delete button
         </button>
