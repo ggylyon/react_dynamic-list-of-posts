@@ -23,28 +23,36 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSuccess }) => {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!authorName.length) {
+    const authorNameTrimmed = authorName.trim();
+    const authorEmailTrimmed = authorEmail.trim();
+    const commentTextTrimmed = commentText.trim();
+
+    if (!authorNameTrimmed.length) {
       setHasAuthorNameError(true);
     }
 
-    if (!authorEmail.length) {
+    if (!authorEmailTrimmed.length) {
       setHasAuthorEmailError(true);
     }
 
-    if (!commentText.length) {
+    if (!commentTextTrimmed.length) {
       setHasCommentTextError(true);
     }
 
-    if (!authorName.length || !authorEmail.length || !commentText.length) {
+    if (
+      !authorNameTrimmed.length ||
+      !authorEmailTrimmed.length ||
+      !commentTextTrimmed.length
+    ) {
       return;
     }
 
     setIsLoading(true);
 
     const newComment = {
-      name: authorName,
-      email: authorEmail,
-      body: commentText,
+      name: authorNameTrimmed,
+      email: authorEmailTrimmed,
+      body: commentTextTrimmed,
       postId: postId,
     };
 
