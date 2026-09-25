@@ -27,11 +27,16 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSuccess }) => {
     const authorEmailTrimmed = authorEmail.trim();
     const commentTextTrimmed = commentText.trim();
 
+    const isAuthorEmailInputValid =
+      authorEmailTrimmed.length &&
+      authorEmailTrimmed.split('@').length === 2 &&
+      authorEmailTrimmed.split('@')[1].split('.').length === 2;
+
     if (!authorNameTrimmed.length) {
       setHasAuthorNameError(true);
     }
 
-    if (!authorEmailTrimmed.length) {
+    if (!isAuthorEmailInputValid) {
       setHasAuthorEmailError(true);
     }
 
@@ -41,7 +46,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSuccess }) => {
 
     if (
       !authorNameTrimmed.length ||
-      !authorEmailTrimmed.length ||
+      !isAuthorEmailInputValid ||
       !commentTextTrimmed.length
     ) {
       return;

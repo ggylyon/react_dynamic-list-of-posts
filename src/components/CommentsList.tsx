@@ -3,12 +3,12 @@ import { CommentComponent } from './CommentComponent';
 
 type Props = {
   comments: Comment[];
-  onPointerDown: (deletedComment: Comment) => void;
+  handleDelete: (deletedComment: Comment) => void;
 };
 
 export const CommentsList = ({
   comments,
-  onPointerDown: onPointerDown,
+  handleDelete: handleDelete,
 }: Props) => {
   return (
     <>
@@ -18,8 +18,8 @@ export const CommentsList = ({
         return (
           <CommentComponent
             comment={comment}
-            onPointerDown={(deletedComment: Comment) =>
-              onPointerDown(deletedComment)
+            handleClick={(deletedComment: Comment) =>
+              handleDelete(deletedComment)
             }
             key={comment.id}
           />

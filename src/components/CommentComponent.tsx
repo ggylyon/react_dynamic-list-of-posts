@@ -2,13 +2,10 @@ import { Comment } from '../types/Comment';
 
 type Props = {
   comment: Comment;
-  onPointerDown: (comment: Comment) => void;
+  handleClick: (comment: Comment) => void;
 };
 
-export const CommentComponent = ({
-  comment,
-  onPointerDown: onPointerDown,
-}: Props) => {
+export const CommentComponent = ({ comment, handleClick }: Props) => {
   return (
     <article className="message is-small" data-cy="Comment">
       <div className="message-header">
@@ -20,7 +17,7 @@ export const CommentComponent = ({
           type="button"
           className="delete is-small"
           aria-label="delete"
-          onPointerDown={() => onPointerDown(comment)}
+          onClick={() => handleClick(comment)}
         >
           delete button
         </button>

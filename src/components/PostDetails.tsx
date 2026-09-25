@@ -36,71 +36,65 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   }, [post]);
 
   function handleDeleteComment(deletedComment: Comment) {
-    const commentsCopy = [...comments];
-
     setComments(oldComments =>
       oldComments.filter(comment => comment !== deletedComment),
     );
 
-    client.delete(`/comments/${deletedComment.id}`).catch(() => {
-      setComments(commentsCopy);
-    });
+    client.delete(`/comments/${deletedComment.id}`);
   }
 
   return (
     <div className="content" data-cy="PostDetails">
-      <div className="content" data-cy="PostDetails">
-        <div className="block">
-          <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
+      <div className="block">
+        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
 
-          <p data-cy="PostBody">{post.body}</p>
-        </div>
+        <p data-cy="PostBody">{post.body}</p>
+      </div>
 
-        <div className="block">
-          {isLoading && <Loader />}
+      <div className="block">
+        {isLoading && <Loader />}
 
-          {isError && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
-            </div>
-          )}
+        {isError && (
+          <div className="notification is-danger" data-cy="CommentsError">
+            Something went wrong
+          </div>
+        )}
 
-          {!comments.length && !isLoading && !isError && (
-            <p className="title is-4" data-cy="NoCommentsMessage">
-              No comments yet
-            </p>
-          )}
+        {!comments.length && !isLoading && !isError && (
+          <p className="title is-4" data-cy="NoCommentsMessage">
+            No comments yet
+          </p>
+        )}
 
-          {comments.length > 0 && !isLoading && (
-            <CommentsList
-              comments={comments}
-              onPointerDown={(deletedComment: Comment) =>
-                handleDeleteComment(deletedComment)
-              }
-            />
-          )}
-
-          {!isCommentFormVisible && !isLoading && !isError && (
-            <button
-              data-cy="WriteCommentButton"
-              type="button"
-              className="button is-link"
-              onPointerDown={() => setIsCommentFormVisible(true)}
-            >
-              Write a comment
-            </button>
-          )}
-        </div>
-
-        {isCommentFormVisible && !isLoading && (
-          <NewCommentForm
-            postId={post.id}
-            onSuccess={(newComment: Comment) =>
-              setComments(oldComments => [...oldComments, newComment])
+        {comments.length > 0 && !isLoading && (
+          <CommentsList
+            comments={comments}
+            handleDelete={(deletedComment: Comment) =>
+              handleDeleteComment(deletedComment)
             }
           />
         )}
+
+        {!isCommentFormVisible && !isLoading && !isError && (
+          <button
+            data-cy="WriteCommentButton"
+            type="button"
+            className="button is-link"
+            onClick={() => setIsCommentFormVisible(true)}
+          >
+            Write a comment
+          </button>
+        )}
       </div>
+
+      {isCommentFormVisible && !isLoading && (
+        <NewCommentForm
+          postId={post.id}
+          onSuccess={(newComment: Comment) =>
+            setComments(oldComments => [...oldComments, newComment])
+          }
+        />
+      )}
     </div>
   );
 };

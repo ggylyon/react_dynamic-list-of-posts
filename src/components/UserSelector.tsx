@@ -19,12 +19,11 @@ export const UserSelector: React.FC<Props> = ({
 
   useEffect(() => {
     const handleClickOutsideSelector = (event: PointerEvent) => {
-      if (event.target instanceof Node) {
-        if (selectorRef.current) {
-          if (!selectorRef.current.contains(event.target)) {
-            setIsDropdownVisible(false);
-          }
-        }
+      if (
+        !(event.target instanceof Node) ||
+        !selectorRef.current?.contains(event.target as Node)
+      ) {
+        setIsDropdownVisible(false);
       }
     };
 
@@ -46,7 +45,7 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onPointerDown={() => {
+          onClick={() => {
             setIsDropdownVisible(!isDropdownVisible);
           }}
           ref={selectorRef}
@@ -69,7 +68,7 @@ export const UserSelector: React.FC<Props> = ({
                   'is-active': selectedUser?.id === user.id,
                 })}
                 key={user.id}
-                onPointerDown={event => {
+                onClick={event => {
                   event.preventDefault();
                   setIsDropdownVisible(false);
                   onSelect(user);
