@@ -36,11 +36,15 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   }, [post]);
 
   function handleDeleteComment(deletedComment: Comment) {
+    const copyComments = [...comments];
+
     setComments(oldComments =>
       oldComments.filter(comment => comment !== deletedComment),
     );
 
-    client.delete(`/comments/${deletedComment.id}`);
+    client.delete(`/comments/${deletedComment.id}`).catch(() => {
+      setComments(copyComments);
+    });
   }
 
   return (

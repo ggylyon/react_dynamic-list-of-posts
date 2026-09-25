@@ -68,6 +68,9 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSuccess }) => {
         setCommentText('');
         onSuccess(response);
       })
+      .catch(() => {
+        throw new Error('Unable to post a comment');
+      })
       .finally(() => {
         setIsLoading(false);
       });
@@ -141,7 +144,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSuccess }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
